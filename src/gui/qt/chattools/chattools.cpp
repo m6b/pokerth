@@ -94,21 +94,24 @@ void ChatTools::receiveMessage(QString playerName, QString message, bool pm)
 		if(myChatType == INET_LOBBY_CHAT && playerName == "(chat bot)" && message.startsWith(myNick)) {
 			tempMsg = QString("<span style=\"font-weight:bold; color:red;\">"+message+"</span>");
 		} else if(message.contains(myNick, Qt::CaseInsensitive)) {
-			switch (myChatType) {
-			case INET_LOBBY_CHAT: {
-				tempMsg = QString("<span style=\"font-weight:bold; color:"+myLobby->palette().link().color().name()+";\">"+message+"</span>");
-			}
-			break;
-			case LAN_LOBBY_CHAT:
-				tempMsg = QString("<span style=\"font-weight:bold;\">"+message+"</span>");
+			QRegExp notSubstr("[^a-z]"+myNick+"[^a-z]", Qt:CaseInsensitive);
+			if(message.contains(notSubstr)) {
+				switch (myChatType) {
+				case INET_LOBBY_CHAT: {
+					tempMsg = QString("<span style=\"font-weight:bold; color:"+myLobby->palette().link().color().name()+";\">"+message+"</span>");
+				}
 				break;
-			case INGAME_CHAT: {
-				message = message.replace("<a href","<a style=\"color:#"+myStyle->getChatLogTextColor()+"; text-decoration: underline;\" href");
-				tempMsg = QString("<span style=\"color:#"+myStyle->getChatTextNickNotifyColor()+";\">"+message+"</span>");
-			}
-			break;
-			default:
-				tempMsg = message;
+				case LAN_LOBBY_CHAT:
+					tempMsg = QString("<span style=\"font-weight:bold;\">"+message+"</span>");
+					break;
+				case INGAME_CHAT: {
+					message = message.replace("<a href","<a style=\"color:#"+myStyle->getChatLogTextColor()+"; text-decoration: underline;\" href");
+					tempMsg = QString("<span style=\"color:#"+myStyle->getChatTextNickNotifyColor()+";\">"+message+"</span>");
+				}
+				break;
+				default:
+					tempMsg = message;
+				}
 			}
 		} else if(playerName == myNick) {
 			switch (myChatType) {
